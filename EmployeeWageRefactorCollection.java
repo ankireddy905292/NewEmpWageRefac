@@ -2,74 +2,80 @@ package com.bridgelabz;
 import java.util.Random;
 
 public class EmployeeWageRefactorCollection {
-    public String company;
-    public int wagePerHr;
-    public int maxMonthHr;
-    public int workingDays;
-    public int fullTimeHr;
-    public int partTimeHr;
+    private static final int FULLDAYHR = 8, PARTTIMEHR = 4;
+    private static int totalMonthWage = 0;
+    static int checkEmp;
+    static int totalHrCount = 0;
 
-    public EmployeeWageRefactorCollection(String company, int wagePerHr, int maxMonthHr, int workingDays, int fullTimeHr, int partTimeHr) {
-        this.company = company;
-        this.wagePerHr = wagePerHr;
-        this.maxMonthHr = maxMonthHr;
-        this.workingDays = workingDays;
-        this.fullTimeHr = fullTimeHr;
-        this.partTimeHr = partTimeHr;
-    }
-}
+    private int wageHr;
+    private int workDaysLimit;
+    private int hrLimit;
 
-class EmpWageArray {
-    private static final int IS_FULL_TIME = 1;
-    private static final int IS_PART_TIME = 2;
-
-    private int numOfCompany=0;
-    private EmployeeWageRefactorCollection[] companyWageArray;
-
-    public EmpWageArray(){
-        companyWageArray = new EmployeeWageRefactorCollection[5];
+    public void setVariables(int x, int y, int z){
+        this.wageHr = x;
+        this.workDaysLimit = y;
+        this.hrLimit = z;
     }
 
-    public void addCompanyEmpWage(String company, int wagePerHr, int maxMonthHr, int workingDays, int fullTimeHr, int partTimeHr) {
-        companyWageArray[numOfCompany] = new EmployeeWageRefactorCollection(company,wagePerHr,maxMonthHr,workingDays,fullTimeHr,partTimeHr);
-        computeEmpWage(companyWageArray[numOfCompany].company, companyWageArray[numOfCompany].wagePerHr
-                ,companyWageArray[numOfCompany].maxMonthHr ,companyWageArray[numOfCompany].workingDays
-                ,companyWageArray[numOfCompany].fullTimeHr,companyWageArray[numOfCompany].partTimeHr);
-        numOfCompany++;
+    public static void setCheckEmp(){
+        Random rdm = new Random();
+        int rd = rdm.nextInt(3);
+        checkEmp = rd;
     }
 
-    public static void computeEmpWage(String company, int wagePerHr, int maxMonthHr, int workingDays, int fullTimeHr, int partTimeHr){
-        int empHr = 0;
-        int totalEmpHr = 0;
-        int days = 0;
-
-        while (empHr <= maxMonthHr && days <= workingDays) {
-
-            double empCheck = Math.floor(Math.random() * 10) % 3;
-            int empCheck1 = (int) empCheck;
-
-            switch (empCheck1) {
-                case IS_FULL_TIME:
-                    empHr = fullTimeHr;
+    public void  setTotalMonthWage(){
+        int day=0;
+        while (workDaysLimit>0){
+            setCheckEmp();
+            switch (checkEmp){
+                case 1:
+                    totalMonthWage = totalMonthWage + (wageHr * FULLDAYHR);
+                    totalHrCount +=  FULLDAYHR;
+                    workDaysLimit--;
+                    day++;
+                    System.out.println("Day:"+day+"  Wage : "+totalMonthWage+" Working Hrs : "+totalHrCount);
                     break;
-                case IS_PART_TIME:
-                    empHr = partTimeHr;
-                    break;
+                case 2:
+                    totalMonthWage = totalMonthWage + (wageHr * PARTTIMEHR);
+                    totalHrCount += PARTTIMEHR;
+                    workDaysLimit--;
+                    day++;
+                    System.out.println("Day:"+day+"  Wage : "+totalMonthWage+" Working Hrs : "+totalHrCount);
+                case 3:
+                    workDaysLimit--;
+                    day++;
+                    System.out.print("Day:"+day+"  Wage : "+totalMonthWage+" Working Hrs : "+totalHrCount);
+                    System.out.println("<---Employee was Absent");
                 default:
-                    empHr = 0;
+                    if (totalHrCount == hrLimit)
+                        break;
+
             }
-            totalEmpHr = totalEmpHr + empHr;
-            days++;
+
         }
-        int totalWage = totalEmpHr * wagePerHr;
-        System.out.println("Total Wage For " + company + " Company Employee Is " + totalWage);
+        System.out.println("\nTotal Wage of the Month : "+totalMonthWage);
+        System.out.println("Total Hrs of the Employee : "+totalHrCount);
+
     }
 }
+
 class Emp {
     public static void main(String[] args) {
-        EmpWageArray obj = new EmpWageArray();
-        obj.addCompanyEmpWage("INFOSIS", 10, 50, 20, 8, 4);
-        obj.addCompanyEmpWage("COGNIZANT", 20, 50, 20, 6, 3);
+
+        EmployeeWageRefactorCollection ibm = new EmployeeWageRefactorCollection();
+        System.out.println("Employee Wage for 'Accenture': ");
+        ibm.setVariables(450, 20, 150);
+        ibm.setTotalMonthWage();
+
+        EmployeeWageRefactorCollection tcs = new EmployeeWageRefactorCollection();
+        System.out.println("Employee Wage for 'MicroSoft': ");
+        tcs.setVariables(380, 20, 150);
+        tcs.setTotalMonthWage();
+
+        EmployeeWageRefactorCollection hcl = new EmployeeWageRefactorCollection();
+        System.out.println("Employee Wage for 'HCL': ");
+        hcl.setVariables(320, 20, 150);
+        hcl.setTotalMonthWage();
     }
 }
 
